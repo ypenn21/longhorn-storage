@@ -68,6 +68,12 @@ echo -n "{ \"username\":\"${TOKEN}\", \"token\":\"${TOKEN_VALUE}\" }" | gcloud s
 nomos hydrate --source-format=unstructured --output=config --no-api-server-check
 ```
 
+The nomos tool is a binary compiled from Go code and you can install it locally, for example, on a workstation or laptop.
+
+The nomos tool is not included when you install Config Sync. You can install the nomos tool by installing the Google Cloud CLI. If you use Cloud Shell, the Google Cloud CLI comes pre-installed.
+
+We recommend that you use gcloud components install nomos to install the nomos tool. Installing the nomos tool with the Google Cloud CLI lets you use gcloud components update to update the nomos tool to the latest version.
+
 ## Local Validation
 
 Assuming `nomos` is installed (via `gcloud components install nomos`)
