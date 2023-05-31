@@ -1,0 +1,19 @@
+---
+apiVersion: v1
+data: {}
+kind: ConfigMap
+metadata:
+  annotations:
+    config.kubernetes.io/origin: |
+      configuredIn: base/kustomization.yaml
+      configuredBy:
+        apiVersion: builtin
+        kind: HelmChartInflationGenerator
+  labels:
+    app.kubernetes.io/instance: longhorn
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: longhorn
+    app.kubernetes.io/version: v1.4.0
+    helm.sh/chart: longhorn-1.4.0
+  name: lh-orig-cm
+  namespace: longhorn-system

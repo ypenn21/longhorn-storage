@@ -1,0 +1,11 @@
+helmGlobals:
+  chartHome: charts
+
+helmCharts:
+- name: longhorn
+  repo: https://charts.longhorn.io
+  version: v1.4.0
+  releaseName: longhorn
+  namespace: longhorn-system
+  # valuesFile: chart-values
+  includeCRDs: false

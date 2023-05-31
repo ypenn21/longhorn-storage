@@ -1,0 +1,76 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    client.lifecycle.config.k8s.io/mutation: ignore
+    config.kubernetes.io/origin: |
+      configuredIn: base/kustomization.yaml
+      configuredBy:
+        apiVersion: builtin
+        kind: HelmChartInflationGenerator
+  labels:
+    app: longhorn-recovery-backend
+    app.kubernetes.io/instance: longhorn
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: longhorn
+    app.kubernetes.io/version: v1.4.0
+    helm.sh/chart: longhorn-1.4.0
+  name: longhorn-recovery-backend
+  namespace: longhorn-system
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: longhorn-recovery-backend
+  template:
+    metadata:
+      labels:
+        app: longhorn-recovery-backend
+        app.kubernetes.io/instance: longhorn
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: longhorn
+        app.kubernetes.io/version: v1.4.0
+        helm.sh/chart: longhorn-1.4.0
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - longhorn-recovery-backend
+              topologyKey: kubernetes.io/hostname
+            weight: 1
+      containers:
+      - command:
+        - longhorn-manager
+        - recovery-backend
+        - --service-account
+        - longhorn-service-account
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        image: longhornio/longhorn-manager:v1.4.0
+        imagePullPolicy: IfNotPresent
+        name: longhorn-recovery-backend
+        ports:
+        - containerPort: 9600
+          name: recov-backend
+        readinessProbe:
+          initialDelaySeconds: 3
+          periodSeconds: 5
+          tcpSocket:
+            port: 9600
+        securityContext:
+          runAsUser: 2000
+      serviceAccountName: longhorn-service-account

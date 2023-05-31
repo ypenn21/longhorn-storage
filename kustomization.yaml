@@ -1,0 +1,45 @@
+resources:
+- base
+
+patches:
+# Add mutations for deployments
+- target:
+    kind: Deployment
+  path: ignore-deployment-mutation-patch.yaml
+# Remove the .status field on CRDs
+- target:
+    kind: CustomResourceDefinition
+  patch: |-
+    - op: remove
+      path: /status
+# Remove the default ConfigMap (provided by installation)
+- target:
+    kind: ConfigMap
+    name: longhorn-default-setting
+  patch: |-
+    - op: replace
+      path: /metadata/name
+      value: lh-orig-cm
+    - op: replace
+      path: /data
+      value: {}
+# Adding ports to the Engine Manager
+- target:
+    kind: Service
+    name: longhorn-engine-manager
+  patch: |-
+    - op: add
+      path: /spec/ports
+      value:
+        - port: 30001
+          protocol: TCP
+# Adding port value for Replica Manager
+- target:
+    kind: Service
+    name: longhorn-replica-manager
+  patch: |-
+    - op: add
+      path: /spec/ports
+      value:
+        - port: 30002
+          protocol: TCP

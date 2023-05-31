@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: longhorn-ui
+  name: longhorn-frontend-lb
+  namespace: longhorn-system
+spec:
+  type: LoadBalancer
+  selector:
+    app: longhorn-ui
+  ports:
+  - name: http
+    port: 8081
+    targetPort: http
